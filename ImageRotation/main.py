@@ -89,7 +89,7 @@ for j in range(A):
     # Поворот
     copied_base_img = rotate_and_resize(copied_base_img, cur_angle_deg)
 
-    # Итоговое размещение матрица и перевернутого изображения на основе
+    # Итоговое размещение матрицы и перевернутого изображения на основе
     final_base_ing = paste_on_copy(base_img,
                                    [matrix_img, copied_base_img],
                                    [final_matrix2d_pos, final_rotated_pos])
