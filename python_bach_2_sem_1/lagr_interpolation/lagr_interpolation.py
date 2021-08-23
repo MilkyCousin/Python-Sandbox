@@ -14,40 +14,45 @@
 # Зберегти відео (виконати анімацію) для різних значень k.
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class LagrangeInterpolationPoly:
 
-    def __init__(self, x_net):
+    def __init__(self, x_net, y_net):
         assert np.all(np.diff(x_net) > 0)
         self._net = x_net
+        self._target = y_net
 
     def basis_poly(self, x, k):
-        pass
+        x_k = self._net[k]
+        x_net_matrix = np.repeat(np.matrix(self._net), len(x), axis=0).T
+        x_net_matrix = np.delete(x_net_matrix, k, axis=0)
+        denominator = 1 / (x_k - x_net_matrix)
+        nominator = (x - x_net_matrix)
+        return np.prod(nominator / denominator, axis=0)
 
-    def interpolate(self, x, y):
-        pass
+    def interpolate(self, x):
+        s = 0
+        for k in range(len(self._net)):
+            s += self.basis_poly(x, k) * self._target[k]
+        return s
 
     def get_net(self):
         return self._net
 
 
-def L_k(x, x_net, k):
-    """
-    :param x: point on real line
-    :param x_net: column vector of nodes
-    :param k: number of component to fix
-    :return: L_k(x)
-    """
-    X_NET = np.delete(np.matrix(np.repeat(x_net, x_net.shape[0], axis=1)).T, k, axis=1)
-    X = np.matrix(np.repeat(x, x_net.shape[0], axis=1)).T
-    nominator_to_multiply = (X - X_NET)
-    denominator_to_multiply = 1/(x_net[k] - X_NET)
-    ratio_to_multiply = nominator_to_multiply/denominator_to_multiply
-    return np.prod(ratio_to_multiply, axis=1)
+if __name__ == "__main__":
+    x_net = [1, 2, 3]
+    y_net = [1, 4, 9]
+    LP = LagrangeInterpolationPoly(x_net, y_net)
 
+    X = np.linspace(0, len(x_net))
+    Y = LP.interpolate(X)
+    plt.hlines(0, 0, 3, linestyle='--')
+    plt.plot(X,Y.T)
 
-test_net = np.matrix(np.arange(0, 1+0.25, 0.25)).T
-print(test_net)
-J = L_k(1.7, test_net, 1)
-print(J)
+    for k in range(len(x_net)):
+        plt.plot(X,LP.basis_poly(X, k).T)
+
+    plt.show()
