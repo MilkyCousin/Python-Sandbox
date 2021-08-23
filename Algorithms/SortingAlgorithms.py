@@ -37,16 +37,15 @@ def BubbleSort(x):
         for i in range(1,l):
             if a[i-1] > a[i]:
                 a[i-1], a[i] = a[i], a[i-1]
+        l -= 1
     return a
 
 
-def to_merge(a, b):
-    c = []
-    while a and b:
-        c.append(a.pop(0) if a[0] < b[0] else b.pop(0))
-    c.extend(a)
-    c.extend(b)
-    return c
+def BogoSort(x):
+    a = x.copy()
+    while not is_increasing(a):
+        random.shuffle(a)
+    return a
 
 
 def MergeSort(x):
@@ -56,3 +55,7 @@ def MergeSort(x):
     else:
         l = len(a)//2
         return to_merge(MergeSort(a[:l]), MergeSort(a[l:]))
+
+
+def QuickSort(x):
+    a = x.copy()
